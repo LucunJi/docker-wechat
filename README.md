@@ -88,7 +88,7 @@ DPI Scale Factors for graphic screen resolution.
 | 144 | 150% |
 | 192 | 200% |
 
-Default: `120`
+Default: `96`
 
 To enlarge the window & fonts size:
 
@@ -99,14 +99,16 @@ curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.s
 
 ### `DOCHAT_SKIP_PULL`
 
-If you do not want to pull docker image for the latest version at startup everytime, you can set `DOCHAT_SKIP_PULL` environment variable.
+***Not usable in this fork.***
+
+~~If you do not want to pull docker image for the latest version at startup everytime, you can set `DOCHAT_SKIP_PULL` environment variable.~~
 
 ```sh
 curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_SKIP_PULL=true bash
 ```
 
-In case you have downloaded `dochat.sh`:
+~~In case you have downloaded `dochat.sh`:~~
 
 ```sh
 DOCHAT_SKIP_PULL=true ./dochat.sh
@@ -123,11 +125,13 @@ curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.s
 
 ### `DOCHAT_WECHAT_VERSION`
 
-Use a specific version for WeChat.
+***Not usable in this fork -- manually edit `dochat.sh` when needed.***
 
-You can get a full list of the supported versions from Docker Hub Image Tags at <https://hub.docker.com/r/zixia/wechat/tags>
+~~Use a specific version for WeChat.~~
 
-For example:
+~~You can get a full list of the supported versions from Docker Hub Image Tags at <https://hub.docker.com/r/zixia/wechat/tags>~~
+
+~~For example:~~
 
 ```sh
 curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
