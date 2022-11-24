@@ -1,5 +1,13 @@
 # DoChat /dɑɑˈtʃæt/ 盒装微信
 
+***注：这个仓库是分支版本，使用前需要手动搭建镜像：`git clone` 本项目后在项目文件夹内运行***
+
+***Note: This repository is on a forked branch, so manual build before launching is required: run this in repository's directory after `git clone` it***
+
+`docker build -t wechat:forked .`
+
+---
+
 [![Docker](https://github.com/huan/docker-wechat/workflows/Docker/badge.svg)](https://github.com/huan/docker-wechat/actions?query=workflow%3ADocker)
 [![Powered By Wine](https://img.shields.io/badge/Powered%20By-Wine-red)](https://www.winehq.org/)
 
@@ -27,7 +35,7 @@ We have received reports from our user said that their WeChat account has been d
 WeChat PC will be started on your Linux desktop by running the following one-line command:
 
 ```sh
-curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh | bash
+curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh | bash
 ```
 
 If you’re in China, try the following one-line command if the above one-line command does not work well:
@@ -41,7 +49,7 @@ Just copy/paste the above one-line command to your terminal and press Enter. The
 
 ### Attention
 
-The [dochat.sh](https://github.com/huan/docker-wechat/blob/master/dochat.sh) script must not be with uid 0 (root user). Running it with uid 0 will lead to an infinite loop
+The [dochat.sh](https://github.com/lucunji/docker-wechat/blob/master/dochat.sh) script must not be with uid 0 (root user). Running it with uid 0 will lead to an infinite loop
 that is hard to kill from the terminal. If your user doesn't have the right to run docker please add the user to the docker group `sudo usermod -aG docker $USER`.
  A reboot might be neccessary for the changes to take place.
 
@@ -85,7 +93,7 @@ Default: `120`
 To enlarge the window & fonts size:
 
 ```sh
-curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_DPI=192 bash
 ```
 
@@ -94,7 +102,7 @@ curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
 If you do not want to pull docker image for the latest version at startup everytime, you can set `DOCHAT_SKIP_PULL` environment variable.
 
 ```sh
-curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_SKIP_PULL=true bash
 ```
 
@@ -109,7 +117,7 @@ DOCHAT_SKIP_PULL=true ./dochat.sh
 Show more debug log messages.
 
 ```sh
-curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_DEBUG=true bash
 ```
 
@@ -122,13 +130,13 @@ You can get a full list of the supported versions from Docker Hub Image Tags at 
 For example:
 
 ```sh
-curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_WECHAT_VERSION=3.3.0.115 bash
 ```
 
 ## For Hackers
 
-If you want to control everything by yourself, for example, open multiple WeChat PC client on your desktop; then, you might want to inspect the [dochat.sh](https://github.com/huan/docker-wechat/blob/master/dochat.sh) in our repository and try the following docker command:
+If you want to control everything by yourself, for example, open multiple WeChat PC client on your desktop; then, you might want to inspect the [dochat.sh](https://github.com/lucunji/docker-wechat/blob/master/dochat.sh) in our repository and try the following docker command:
 
 ```sh
 docker run \
@@ -186,6 +194,15 @@ For example: the `zixia/wechat:0.2` may be the same image as the `zixia/wechat:2
 
 ## FAQ
 
+### Nvidia Support is Missing
+
+Error message when running `dochat.sh`:
+
+```docker: Error response from daemon: exec: "nvidia-container-runtime-hook": executable file not found in $PATH.```
+
+Solution is to install `nvidia-container-toolkit`
+See https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-docker.html for more details.
+
 ### System Tray Icon with Gnome Desktop
 
 Install Gnome Extension: [Top Icons Plus Git](https://extensions.gnome.org/extension/2311/topicons-plus/) by bijignome
@@ -216,7 +233,7 @@ This behavior may cause the view disappear when you use the Join Displays mode, 
 #bin/bash
 xrandr --output HDMI-1-2 --same-as eDP-1-1
 
-curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_SKIP_PULL=true bash &
 
 sleep 5
