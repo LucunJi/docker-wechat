@@ -10,7 +10,51 @@
 #
 set -eo pipefail
 
+function hello () {
+  cat <<'EOF'
+
+       ____         ____ _           _
+      |  _ \  ___  / ___| |__   __ _| |_
+      | | | |/ _ \| |   | '_ \ / _` | __|
+      | |_| | (_) | |___| | | | (_| | |_
+      |____/ \___/ \____|_| |_|\__,_|\__| (forked)
+
+      https://github.com/lucunji/docker-wechat
+
+                +--------------+
+               /|             /|
+              / |            / |
+             *--+-----------*  |
+             |  |           |  |
+             |  |   盒装    |  |
+             |  |   微信    |  |
+             |  +-----------+--+
+             | /            | /
+             |/             |/
+             *--------------*
+
+      DoChat /dɑɑˈtʃæt/ (Docker-weChat) is:
+
+      📦 a Docker image
+      🤐 for running PC Windows WeChat
+      💻 on your Linux desktop
+      💖 by one-line of command
+
+EOF
+}
+
 function main () {
+
+  hello
+
+  # backward compatibility after correcting the typo in directory
+  if [[ -d "$HOME/DoChat/Applcation Data" ]]; then
+      mv "$HOME/DoChat/Applcation Data" "$HOME/DoChat/Application Data"
+  fi
+
+  # prevents issue of not enough privilege if docker automatically create these folders
+  mkdir -p "$HOME/DoChat/Application Data"
+  mkdir -p "$HOME/DoChat/WeChat Files"
 
   DEVICE_ARG=()
   # change /dev/video* to /dev/nvidia* for Nvidia
@@ -21,8 +65,10 @@ function main () {
     DEVICE_ARG+=('--gpus' 'all' '--env' 'NVIDIA_DRIVER_CAPABILITIES=all')
   fi
 
+  echo '🚀 Starting DoChat /dɑɑˈtʃæt/ ...'
+  echo
   # Issue #111 - https://github.com/huan/docker-wechat/issues/111
-  rm -f "$HOME/WeChat/Applcation Data/Tencent/WeChat/All Users/config/configEx.ini"
+  rm -f "$HOME/DoChat/Application Data/Tencent/WeChat/All Users/config/configEx.ini"
 
   #
   # --privileged: enable sound (/dev/snd/)
@@ -34,8 +80,8 @@ function main () {
     --rm \
     -i \
     \
-    -v "$HOME/WeChat/WeChat Files/":'/home/user/WeChat Files/' \
-    -v "$HOME/WeChat/Applcation Data":'/home/user/.wine/drive_c/users/user/Application Data/' \
+    -v "$HOME/DoChat/WeChat Files/":'/home/user/WeChat Files/' \
+    -v "$HOME/DoChat/Application Data":'/home/user/.wine/drive_c/users/user/Application Data/' \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     \
     -e DISPLAY \
@@ -50,12 +96,17 @@ function main () {
     -e VIDEO_GID="$(getent group video | cut -d: -f3)" \
     -e GID="$(id -g)" \
     -e UID="$(id -u)" \
-    --ipc=host \
-    `#--privileged` \
     \
-    wechat
+    --ipc=host \
+    \
+    wechat:forked
 
-    echo "WeChat Exited with code $?"
+    echo
+    echo "📦 DoChat Exited with code [$?]"
+    echo
+    echo '🐞 Bug Report (current fork): https://github.com/lucunji/docker-wechat/issues'
+    echo '🐞 Bug Report (root fork): https://github.com/huan/docker-wechat/issues'
+    echo
 }
 
 main
