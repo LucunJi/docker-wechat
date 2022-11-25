@@ -47,14 +47,29 @@ function main () {
 
   hello
 
+  APPDATA_DIR="$HOME/DoChat/Application Data"
+  USERFILE_DIR="$HOME/DoChat/WeChat Files"
+
+  # suppress issue of spamming crash reports when ALLOW_ERR_REPORTS is unset
+  if [ -z ${ALLOW_ERR_REPORTS+x} ]; then
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/log"
+      ln -s /dev/null "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
+      ln -s /dev/null "$APPDATA_DIR/Tencent/WeChat/log"
+  else
+      # clean up soft link
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/log"
+  fi
+
   # backward compatibility after correcting the typo in directory
   if [[ -d "$HOME/DoChat/Applcation Data" ]]; then
-      mv "$HOME/DoChat/Applcation Data" "$HOME/DoChat/Application Data"
+      mv "$HOME/DoChat/Applcation Data" "$APPDATA_DIR"
   fi
 
   # prevents issue of not enough privilege if docker automatically create these folders
-  mkdir -p "$HOME/DoChat/Application Data"
-  mkdir -p "$HOME/DoChat/WeChat Files"
+  mkdir -p "$APPDATA_DIR"
+  mkdir -p "$USERFILE_DIR"
 
   DEVICE_ARG=()
   # change /dev/video* to /dev/nvidia* for Nvidia
@@ -68,7 +83,7 @@ function main () {
   echo '🚀 Starting DoChat /dɑɑˈtʃæt/ ...'
   echo
   # Issue #111 - https://github.com/huan/docker-wechat/issues/111
-  rm -f "$HOME/DoChat/Application Data/Tencent/WeChat/All Users/config/configEx.ini"
+  rm -f "$APPDATA_DIR/Tencent/WeChat/All Users/config/configEx.ini"
 
   #
   # --privileged: enable sound (/dev/snd/)
@@ -80,8 +95,13 @@ function main () {
     --rm \
     -i \
     \
-    -v "$HOME/DoChat/WeChat Files/":'/home/user/WeChat Files/' \
-    -v "$HOME/DoChat/Application Data":'/home/user/.wine/drive_c/users/user/Application Data/' \
+    --cpus="${CPU_LIMIT:-2}" \
+    --memory="${MEMORY_LIMIT:-1g}" \
+    --memory-reservation="${MEMORY_RESERVATION:-512m}" \
+    --memory-swap="${MEMORY_SWAP:-0}" \
+    \
+    -v "$USERFILE_DIR":'/home/user/WeChat Files/' \
+    -v "$APPDATA_DIR":'/home/user/.wine/drive_c/users/user/Application Data/' \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     \
     -e DISPLAY \
@@ -100,6 +120,7 @@ function main () {
     --ipc=host \
     \
     wechat:forked
+#    zixia/wechat:3.3.0.115
 
     echo
     echo "📦 DoChat Exited with code [$?]"

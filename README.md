@@ -97,6 +97,32 @@ curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.s
   | DOCHAT_DPI=192 bash
 ```
 
+### Resource limits (`CPU_LIMIT`, `MEMORY_LIMIT` ...)
+
+| Name | Usage | Default |
+|------|-------|---------|
+| `CPU_LIMIT`          | Maximum CPU usage | `2` |
+| `MEMORY_LIMIT`       | Maximum memory limit (crash if too small) | `1g` |
+| `MEMORY_RESERVATION` | Soft maximum memory limit (does not crash is too small) | `512m` |
+| `MEMORY_SWAP`        | Swap memory size | `0` |
+
+The CPU and memory usage is high during WeChat startup.
+A couple minutes later, WeChat starts to use less resource.
+
+A too small `CPU_LIMIT` freezes WeChat, while a too small `MEMORY_LIMIT` crashes WeChat when it needs more than that.
+On the other hand, setting a small `MEMORY_RESERVATION` does no harm and can make the program shrink its memory usage during idling.
+
+It runs well on my computer with Arch Linux-lts and i5-8300H CPU and
+the settings
+```sh
+CPU_LIMIT=1 MEMORY_LIMIT=700m MEMORY_RESERVATIOM=256m
+```
+Hence the default values give a more loose bound.
+You can adjust them by monitoring the resource usage with `docker stats`
+
+See https://docs.docker.com/config/containers/resource_constraints for more details.
+
+
 ### `DOCHAT_SKIP_PULL`
 
 ***Not usable in this fork.***
@@ -122,6 +148,15 @@ Show more debug log messages.
 curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.sh \
   | DOCHAT_DEBUG=true bash
 ```
+
+### `ALLOW_ERR_REPORTS`
+
+Setting `ALLOW_ERR_REPORTS` to any value re-enables WeChat to save reports into the disk.
+
+The latest version of the docker image is not robust enough and has many minor errors.
+When WeChat encounters errors, it may spam your file system with error reports,
+which mainly consists logs (small, several MBs) and memory dump (large, half or more GBs).
+To prevent it filling your disk quickly, the log folders are replaced with soft links to `/dev/null`.
 
 ### `DOCHAT_WECHAT_VERSION`
 
