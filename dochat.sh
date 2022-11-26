@@ -50,18 +50,6 @@ function main () {
   APPDATA_DIR="$HOME/DoChat/Application Data"
   USERFILE_DIR="$HOME/DoChat/WeChat Files"
 
-  # suppress issue of spamming crash reports when ALLOW_ERR_REPORTS is unset
-  if [ -z ${ALLOW_ERR_REPORTS+x} ]; then
-      rm -rf "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
-      rm -rf "$APPDATA_DIR/Tencent/WeChat/log"
-      ln -s /dev/null "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
-      ln -s /dev/null "$APPDATA_DIR/Tencent/WeChat/log"
-  else
-      # clean up soft link
-      rm -rf "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
-      rm -rf "$APPDATA_DIR/Tencent/WeChat/log"
-  fi
-
   # backward compatibility after correcting the typo in directory
   if [[ -d "$HOME/DoChat/Applcation Data" ]]; then
       mv "$HOME/DoChat/Applcation Data" "$APPDATA_DIR"
@@ -70,6 +58,20 @@ function main () {
   # prevents issue of not enough privilege if docker automatically create these folders
   mkdir -p "$APPDATA_DIR"
   mkdir -p "$USERFILE_DIR"
+
+  # suppress issue of spamming crash reports when ALLOW_ERR_REPORTS is unset
+  if [ -z ${ALLOW_ERR_REPORTS+x} ]; then
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/log"
+      mkdir -p "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad"
+      mkdir -p "$APPDATA_DIR/Tencent/WeChat"
+      ln -s /dev/null "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
+      ln -s /dev/null "$APPDATA_DIR/Tencent/WeChat/log"
+  else
+      # clean up soft link
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/xweb/crash/Crashpad/reports"
+      rm -rf "$APPDATA_DIR/Tencent/WeChat/log"
+  fi
 
   DEVICE_ARG=()
   # change /dev/video* to /dev/nvidia* for Nvidia
