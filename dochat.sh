@@ -47,6 +47,9 @@ function main () {
 
   hello
 
+  # fixes launching error (use xauth in the future for safety)
+  xhost +local:root
+
   APPDATA_DIR="$HOME/DoChat/Application Data"
   USERFILE_DIR="$HOME/DoChat/WeChat Files"
 
