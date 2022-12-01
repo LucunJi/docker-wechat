@@ -101,7 +101,7 @@ function main () {
     -i \
     \
     --cpus="${CPU_LIMIT:-2}" \
-    --memory="${MEMORY_LIMIT:-1g}" \
+    --memory="${MEMORY_LIMIT:-2g}" \
     --memory-reservation="${MEMORY_RESERVATION:-512m}" \
     --memory-swap="${MEMORY_SWAP:-0}" \
     \

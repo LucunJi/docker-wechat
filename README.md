@@ -4,7 +4,7 @@
 
 ***Note: This repository is on a forked branch, so manual build before launching is required: run this in repository's directory after `git clone` it***
 
-`docker build -t wechat:forked .`
+docker build -t wechat:forked .`
 
 ---
 
@@ -102,7 +102,7 @@ curl -sL https://raw.githubusercontent.com/lucunji/docker-wechat/master/dochat.s
 | Name | Usage | Default |
 |------|-------|---------|
 | `CPU_LIMIT`          | Maximum CPU usage | `2` |
-| `MEMORY_LIMIT`       | Maximum memory limit (crash if too small) | `1g` |
+| `MEMORY_LIMIT`       | Maximum memory limit (crash if too small) | `2g` |
 | `MEMORY_RESERVATION` | Soft maximum memory limit (does not crash is too small) | `512m` |
 | `MEMORY_SWAP`        | Swap memory size | `0` |
 
@@ -112,13 +112,10 @@ A couple minutes later, WeChat starts to use less resource.
 A too small `CPU_LIMIT` freezes WeChat, while a too small `MEMORY_LIMIT` crashes WeChat when it needs more than that.
 On the other hand, setting a small `MEMORY_RESERVATION` does no harm and can make the program shrink its memory usage during idling.
 
-It runs well on my computer with Arch Linux-lts and i5-8300H CPU and
-the settings
-```sh
-CPU_LIMIT=1 MEMORY_LIMIT=700m MEMORY_RESERVATIOM=256m
-```
-Hence the default values give a more loose bound.
-You can adjust them by monitoring the resource usage with `docker stats`
+It runs well on my computer with Arch Linux-lts and i5-8300H CPU with `CPU_LIMIT=1` and the default memory settings.
+
+You can fine-tune these parameters by monitoring the resource usage with `docker stats`,
+or simply grant even more resource to prevent it from OOM shutdown.
 
 See https://docs.docker.com/config/containers/resource_constraints for more details.
 
